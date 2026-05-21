@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValidationErrorResponse {
+public class ApiErrorResponse {
     private Instant timestamp;
     private String message;
     private int status;
