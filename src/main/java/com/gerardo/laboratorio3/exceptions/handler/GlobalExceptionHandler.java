@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
                 .failedValidationList(null)
                 .build();
 
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(response);
     }
 
