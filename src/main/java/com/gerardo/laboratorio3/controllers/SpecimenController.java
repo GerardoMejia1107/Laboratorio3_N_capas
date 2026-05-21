@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -32,7 +33,7 @@ public class SpecimenController {
     @GetMapping("/specimens")
     public ResponseEntity<GeneralResponse> listAllSpecimens(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "3") Integer size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
@@ -40,6 +41,15 @@ public class SpecimenController {
                 "Specimens retrieved successfully",
                 HttpStatus.OK,
                 specimenService.getAllSpecimens(page, size, sortBy, sortOrder)
+        );
+    }
+
+    @GetMapping("/{id}/specimen")
+    public ResponseEntity<GeneralResponse> listOneSpecimen(@PathVariable UUID id) {
+        return buildResponse(
+                "Specimen retrieved successfully",
+                HttpStatus.OK,
+                specimenService.getSpecimenById(id)
         );
     }
 

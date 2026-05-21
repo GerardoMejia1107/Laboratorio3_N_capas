@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         ApiErrorResponse response = ApiErrorResponse.builder()
                 .timestamp(Instant.now())
-                .message("Resource was not found in storage")
+                .message(ex.getMessage())
                 .error("Resource with specified id was not found")
                 .status(HttpStatus.NOT_FOUND.value())
                 .failedValidationList(null)
