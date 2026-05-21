@@ -44,12 +44,21 @@ public class SpecimenController {
         );
     }
 
-    @GetMapping("/{id}/specimen")
+    @GetMapping("/specimens/{id}")
     public ResponseEntity<GeneralResponse> listOneSpecimen(@PathVariable UUID id) {
         return buildResponse(
                 "Specimen retrieved successfully",
                 HttpStatus.OK,
                 specimenService.getSpecimenById(id)
+        );
+    }
+
+    @DeleteMapping("/specimens/{id}")
+    public ResponseEntity<GeneralResponse> removeSpecimen(@PathVariable UUID id) {
+        return buildResponse(
+                "Specimen was removed successfully",
+                HttpStatus.OK,
+                specimenService.deleteSpecimen(id)
         );
     }
 
