@@ -2,6 +2,7 @@ package com.gerardo.laboratorio3.controllers;
 
 import com.gerardo.laboratorio3.dto.GeneralResponse;
 import com.gerardo.laboratorio3.dto.request.CreateSpecimenRequest;
+import com.gerardo.laboratorio3.dto.request.UpdateSpecimenRequest;
 import com.gerardo.laboratorio3.dto.response.SpecimenResponse;
 import com.gerardo.laboratorio3.services.SpecimenService;
 import jakarta.validation.Valid;
@@ -59,6 +60,16 @@ public class SpecimenController {
                 "Specimen was removed successfully",
                 HttpStatus.OK,
                 specimenService.deleteSpecimen(id)
+        );
+    }
+
+    @PutMapping("/specimens/{id}")
+    public ResponseEntity<GeneralResponse> updateSpecimen(@PathVariable UUID id,
+                                                          @RequestBody UpdateSpecimenRequest request) {
+        return buildResponse(
+                "Specimen was updated successfully",
+                HttpStatus.OK,
+                specimenService.updateSpecimen(id, request)
         );
     }
 
