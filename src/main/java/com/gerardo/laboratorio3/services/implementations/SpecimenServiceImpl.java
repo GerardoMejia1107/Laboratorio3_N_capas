@@ -6,6 +6,7 @@ import com.gerardo.laboratorio3.dto.request.UpdateSpecimenRequest;
 import com.gerardo.laboratorio3.dto.response.SpecimenResponse;
 import com.gerardo.laboratorio3.exceptions.custom.ResourceNotFoundException;
 import com.gerardo.laboratorio3.model.Specimen;
+import com.gerardo.laboratorio3.repositories.SpecimenRepository;
 import com.gerardo.laboratorio3.services.SpecimenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
