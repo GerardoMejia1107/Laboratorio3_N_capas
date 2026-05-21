@@ -1,4 +1,4 @@
-package com.gerardo.laboratorio3.services;
+package com.gerardo.laboratorio3.services.implementations;
 
 import com.gerardo.laboratorio3.common.SpecimenMapper;
 import com.gerardo.laboratorio3.dto.request.CreateSpecimenRequest;
@@ -6,6 +6,7 @@ import com.gerardo.laboratorio3.dto.request.UpdateSpecimenRequest;
 import com.gerardo.laboratorio3.dto.response.SpecimenResponse;
 import com.gerardo.laboratorio3.exceptions.custom.ResourceNotFoundException;
 import com.gerardo.laboratorio3.model.Specimen;
+import com.gerardo.laboratorio3.services.SpecimenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
