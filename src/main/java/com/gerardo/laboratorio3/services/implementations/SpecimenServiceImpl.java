@@ -3,6 +3,7 @@ package com.gerardo.laboratorio3.services.implementations;
 import com.gerardo.laboratorio3.common.SpecimenMapper;
 import com.gerardo.laboratorio3.dto.request.CreateSpecimenRequest;
 import com.gerardo.laboratorio3.dto.request.UpdateSpecimenRequest;
+import com.gerardo.laboratorio3.dto.response.PageableResponse;
 import com.gerardo.laboratorio3.dto.response.SpecimenResponse;
 import com.gerardo.laboratorio3.exceptions.custom.ResourceNotFoundException;
 import com.gerardo.laboratorio3.model.Specimen;
@@ -10,6 +11,10 @@ import com.gerardo.laboratorio3.repositories.SpecimenRepository;
 import com.gerardo.laboratorio3.services.SpecimenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,14 +36,27 @@ public class SpecimenServiceImpl implements SpecimenService {
     }
 
     @Override
-    public List<SpecimenResponse> getAllSpecimens() {
-        List<Specimen> specimens = specimenRepository.findAll();
-        if (specimens.isEmpty())
-            throw new ResourceNotFoundException("No specimens are registered in Hyrule");
+    public PageableResponse<SpecimenResponse> getAllSpecimens(
+            Integer page,
+            Integer size,
+            String sortBy,
+            String sortOrder
+    ) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy)
+                  .descending()
+                : Sort.by(sortBy)
+                  .ascending();
 
-        return specimens.stream()
-                .map(specimenMapper::toDto)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Specimen> specimenPage = specimenRepository.findAll(pageable);
+
+        if (specimenPage.isEmpty()) {
+            throw new ResourceNotFoundException("No specimens are registered in Hyrule");
+        }
+
+        return specimenMapper.toPageableResponse(specimenPage);
     }
 
     @Override
