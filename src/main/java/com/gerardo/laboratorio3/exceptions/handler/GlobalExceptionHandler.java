@@ -1,0 +1,86 @@
+package com.gerardo.laboratorio3.exceptions.handler;
+
+import com.gerardo.laboratorio3.exceptions.FailedValidation;
+import com.gerardo.laboratorio3.exceptions.custom.ResourceNotFoundException;
+import com.gerardo.laboratorio3.exceptions.response.ValidationErrorResponse;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestControllerAdvice
+@Slf4j
+public class GlobalExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleMethodArgumentNotValidException
+            (MethodArgumentNotValidException ex) {
+        List<FailedValidation> validationList = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> new FailedValidation(
+                        fieldError.getField(),
+                        fieldError.getDefaultMessage(),
+                        fieldError.getRejectedValue()
+                ))
+                .toList();
+        ValidationErrorResponse response = ValidationErrorResponse.builder()
+                .timestamp(Instant.now())
+                .message("One or more fields have validation errors")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Validation failed")
+                .failedValidationList(validationList)
+                .build();
+
+        return ResponseEntity.badRequest()
+                .body(
+                        response
+                );
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        List<FailedValidation> validationList = ex.getConstraintViolations()
+                .stream()
+                .map(constraintViolation -> new FailedValidation(
+                        constraintViolation.getPropertyPath()
+                                .toString(),
+                        constraintViolation.getMessage(),
+                        constraintViolation.getInvalidValue()
+                ))
+                .toList();
+
+        ValidationErrorResponse response = ValidationErrorResponse.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("One or more constraints were violated")
+                .error("Constraint violation")
+                .failedValidationList(validationList)
+                .build();
+
+        return ResponseEntity.badRequest()
+                .body(response);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ValidationErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ValidationErrorResponse response = ValidationErrorResponse.builder()
+                .timestamp(Instant.now())
+                .message("Resource was not found in storage")
+                .error("Resource with specified id was not found")
+                .status(HttpStatus.NOT_FOUND.value())
+                .failedValidationList(null)
+                .build();
+
+        return ResponseEntity.badRequest()
+                .body(response);
+    }
+
+
+}
